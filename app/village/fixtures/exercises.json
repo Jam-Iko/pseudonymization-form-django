@@ -5,7 +5,7 @@
         "fields": {
             "village": "pwdcrack",
             "title": "MySQL database with MD5 passwords hashes",
-            "description": "You as a hacker have got access to the machine. There is a MySQL server running on the machine. Probably some database contains a root user's password. Flag: AC2021{r00t_sh0uld_c4re_mor3_about_d4tabases}",
+            "description": "You as a hacker have got access to the machine. There is a MySQL server running on the machine. Probably some database contains a root user's password. Flag: eXpl0it{r00t_sh0uld_c4re_mor3_about_d4tabases}",
             "summary": "Get a flag from the root user's home directory on the machine.",
             "steps": [
                 "List all services running the appropriate command.", 
@@ -26,8 +26,8 @@
                 "Password: iloveyou"
             ],
             "portainer_server": "PWDCRACK01",
-            "portainer_stack_id": "5",
-            "portainer_ip": "172.25.108.21",
+            "portainer_stack_id": "1",
+            "portainer_ip": "35.80.5.167",
             "portainer_link": ":6080/vnc.html"
         }
     },
@@ -37,7 +37,7 @@
         "fields": {
             "village": "pwdcrack",
             "title": "Hardcoded credentials in a javascript code",
-            "description": "It is a machine with some dumped backup of a compromised website. The root user uses the same password that was used for access to the website. Flag: AC2021{n3v3r_R3lY_on_ObfU5C4t10n_0Nly}",
+            "description": "It is a machine with some dumped backup of a compromised website. The root user uses the same password that was used for access to the website. Flag: eXpl0it{n3v3r_R3lY_on_ObfU5C4t10n_0Nly}",
             "summary": "Get a flag from root user's home directory on the machine.",
             "steps": [
                 "Read notes.txt on the user's Desktop.", 
@@ -53,9 +53,9 @@
                 "Password: KgEHHWjzT277saPt"               
             ],
             "portainer_server": "PWDCRACK02",
-            "portainer_stack_id": "172.25.226.98",
-            "portainer_ip": "1",
-            "portainer_link": ":6080/vnc.html"
+            "portainer_stack_id": "35.80.5.167",
+            "portainer_ip": "2",
+            "portainer_link": ":6082/vnc.html"
         }
     },
     {
@@ -64,7 +64,7 @@
         "fields": {
             "village": "pwdcrack",
             "title": "SSH passphrase cracking",
-            "description": "There is a private SSH key on the machine and John The Ripper in the home directory. Need to crack some SSH keys. Flag: AC2021{s3t_STroN6_55H_P4ssW0rD_And_pHR4s3}",
+            "description": "There is a private SSH key on the machine and John The Ripper in the home directory. Need to crack some SSH keys. Flag: eXpl0it{s3t_STroN6_55H_P4ssW0rD_And_pHR4s3}",
             "summary": "Get a flag from the user's home directory on the remote victim's machine.",
             "steps": [
                 "Read notes.txt on the user's Desktop. Find a username(`wolly`), hostname(`challenge03.target`), and even a password(`GGUSqastz74BDSXr`). Additionally, there is an SSH private key.",
@@ -84,9 +84,9 @@
                 "Passphrase: newlife2007"
             ],
             "portainer_server": "PWDCRACK03",
-            "portainer_stack_id": "1",
-            "portainer_ip": "172.25.19.137",
-            "portainer_link": ":6080/vnc.html"
+            "portainer_stack_id": "3",
+            "portainer_ip": "35.80.5.167",
+            "portainer_link": ":6083/vnc.html"
         }
     },
     {
@@ -95,19 +95,19 @@
         "fields": {
             "village": "pwdcrack",
             "title": "Login HTTP form bruteforce",
-            "description": "Brute force credentials for a website using hydra. Flag: AC2021{hT7p_f0RM_BruT3_F0rC3_ma7t3R5}",
+            "description": "Brute force credentials for a website using hydra. Flag: eXpl0it{hT7p_f0RM_BruT3_F0rC3_ma7t3R5}",
             "summary": "Get a flag from the user's home webpage.",
             "steps": [
-                "Find a web page on `http://challenge03.target:80` host. There is a login form there. Find a comment using `Inspect element` in your web browser.",
+                "Find a web page on `http://challenge03.target:81` host. There is a login form there. Find a comment using `Inspect element` in your web browser.",
                 "<!--Steven! Make sure that you changed your envinonmental password!-->",
                 "Now we can make an assumption that the username is `Steven`. Using `hydra` and the wordlist in home directory we can easily brute-force the password.",
                 "$ hydra -l \"Steven\" -P /home/user/wordlist.txt challenge04.target http-post-form \"/login.php:Username=Steven&Password=^PASS^&Submit=Login:Incorrect\" -I -t 64",
                 "The cracked credentials are `Steven:justice123456`"
             ],
             "portainer_server": "PWDCRACK04",
-            "portainer_stack_id": "1",
-            "portainer_ip": "172.25.161.143",
-            "portainer_link": ":6080/vnc.html"
+            "portainer_stack_id": "4",
+            "portainer_ip": "35.80.5.167",
+            "portainer_link": ":6084/vnc.html"
         }
     },
     {
@@ -116,7 +116,7 @@
         "fields": {
             "village": "pwdcrack",
             "title": "Basic Auth bruteforce",
-            "description": "There is a Flask application hosted on `challenge05.target` host and the default Flask port. Flag: AC2021{Th4ts_b4s1cally_th4t5_34sy}",
+            "description": "There is a Flask application hosted on `challenge05.target` host and the default Flask port. Flag: eXpl0it{Th4ts_b4s1cally_th4t5_34sy}",
             "summary": "Get a flag from the web root via `admin` user credentials.",
             "steps": [
                 "Find a web page hosted on `challenge05.target` host with default flask port `5000`. There is a web page secured with basic auth.",
@@ -126,9 +126,9 @@
                 "The cracked credentials are `admin:!)#)456783jing`"
             ],
             "portainer_server": "PWDCRACK05",
-            "portainer_stack_id": "1",
-            "portainer_ip": "172.25.136.184",
-            "portainer_link": ":6080/vnc.html"
+            "portainer_stack_id": "5",
+            "portainer_ip": "35.80.5.167",
+            "portainer_link": ":6085/vnc.html"
         }
     },
     {
@@ -137,7 +137,7 @@
         "fields": {
             "village": "pwdcrack",
             "title": "Crack targeted victim's ssh password with a custom wordlist",
-            "description": "Brute force credentials for a website using `hydra` with generated wordlist via `cupp` tool. Flag: AC2021{aLW4y5_6eN3r4Te_5tr0nG_pa55W0rd5}",
+            "description": "Brute force credentials for a website using `hydra` with generated wordlist via `cupp` tool. Flag: eXpl0it{aLW4y5_6eN3r4Te_5tr0nG_pa55W0rd5}",
             "summary": "Get a flag from the victim's home directory.",
             "steps": [
                 "Find file `notes.txt` on the user's desktop.",
@@ -175,9 +175,9 @@
                " Cracked credentials are `apink:Pinkapink98`"
             ],
             "portainer_server": "PWDCRACK06",
-            "portainer_stack_id": "1",
-            "portainer_ip": "172.25.58.62",
-            "portainer_link": ":6080/vnc.html"
+            "portainer_stack_id": "6",
+            "portainer_ip": "35.80.5.167",
+            "portainer_link": ":6086/vnc.html"
         }
     },
     {
@@ -186,7 +186,7 @@
         "fields": {
             "village": "pwdcrack",
             "title": "PDF password cracking",
-            "description": "There is a secret PDF file on a desktop with some information. But it's needed to crack the password that protects the file content. Flag: AC2021{pdf_Doc_1s_n07_tH3_S4f3sT_sT0r4g3}",
+            "description": "There is a secret PDF file on a desktop with some information. But it's needed to crack the password that protects the file content. Flag: eXpl0it{pdf_Doc_1s_n07_tH3_S4f3sT_sT0r4g3}",
             "summary": "Get a flag stored in the file using `pdfcrack` tool.",
             "steps": [
                 "Find a PDF file on a desktop. Notice that the file is password-protected.",
@@ -196,9 +196,9 @@
                 "The cracked password is `booyaka619`"
             ],
             "portainer_server": "PWDCRACK07",
-            "portainer_stack_id": "1",
-            "portainer_ip": "172.25.168.43",
-            "portainer_link": ":6080/vnc.html"
+            "portainer_stack_id": "7",
+            "portainer_ip": "35.80.5.167",
+            "portainer_link": ":6087/vnc.html"
         }
     },
     {
@@ -222,13 +222,13 @@
         "fields": {
             "village": "asylum",
             "title": "Inspect website sources",
-            "description": "Discover web application's public source code to get a flag that consists of two parts. Flag: AC2021{VIeW_s0uRC3_InsP3CT_elEM3nt}",
+            "description": "Discover web application's public source code to get a flag that consists of two parts. Flag: eXpl0it{VIeW_s0uRC3_InsP3CT_elEM3nt}",
             "summary": "Browse the dark web yourself using our systems that are set up to access the underground sites",
             "steps": [
                 "Find a website on `challenge01.target` host.", 
-                "http://challenge01.target:80/",
-                "The first part of the flag is on the main web page (`index.html`) - `AC2021{VIeW_s0uRC3`.",
-                "<span class=\"mw-headline\" something=\"AC2021{VIeW_s0uRC3\" id=\"Urban_gaming\">Urban gaming</span>p",
+                "http://challenge01.target:82/",
+                "The first part of the flag is on the main web page (`index.html`) - `eXpl0it{VIeW_s0uRC3`.",
+                "<span class=\"mw-headline\" something=\"eXpl0it{VIeW_s0uRC3\" id=\"Urban_gaming\">Urban gaming</span>p",
                 "The second part of the flag is commented in a CSS file of the website (`style.html`) - `_InsP3CT_elEM3nt}`.",
                 ".minimizedPanel .contentsHeader {",
                 "    text-align: left;",
@@ -246,9 +246,9 @@
                 "}"
             ],
             "portainer_server": "ASYLUM01",
-            "portainer_stack_id": "1",
-            "portainer_ip": "172.25.163.184",
-            "portainer_link": ":6080/vnc.html"
+            "portainer_stack_id": "12",
+            "portainer_ip": "172.25.87.220",
+            "portainer_link": ":6081/vnc.html"
         }
     },
     {
@@ -257,10 +257,10 @@
         "fields": {
             "village": "asylum",
             "title": "Hidden directory",
-            "description": "There is a secret file stored in the php web application `http://challenge02.target/`. Flag: AC2021{w0W_HoW_d1d_Y0u_f0unD_th1s}",
+            "description": "There is a secret file stored in the php web application `http://challenge02.target/`. Flag: eXpl0it{w0W_HoW_d1d_Y0u_f0unD_th1s}",
             "summary": "Get a flag hidden file in the web application.",
             "steps": [
-                "Find a website on `http://challenge.target:80/`. Using the `dirsearch` tool and the wordlist in the home directory enumerate application endpoints.",
+                "Find a website on `http://challenge.target:83/`. Using the `dirsearch` tool and the wordlist in the home directory enumerate application endpoints.",
                 "$ ./dirsearch.py -u http://challenge02.target -w ../Filenames_Doted_Common.wordlist -x 404",
                 "Extensions: php, aspx, jsp, html, js | HTTP method: GET | Threads: 30 | Wordlist size: 1070",
                 "Output File: /home/user/dirsearch-0.4.2/reports/challenge02.target/_21-11-21_18-26-04.txt",
@@ -281,9 +281,9 @@
                 "[18:31:56] 200 -   35B  - /secret/flag.tx"
             ],
             "portainer_server": "ASYLUM02",
-            "portainer_stack_id": "1",
-            "portainer_ip": "172.25.229.191",
-            "portainer_link": ":6080/vnc.html"
+            "portainer_stack_id": "13",
+            "portainer_ip": "172.25.87.220",
+            "portainer_link": ":6182/vnc.html"
         }
     },
     {
@@ -292,7 +292,7 @@
         "fields": {
             "village": "asylum",
             "title": "Outdated software - Webmin with RCE",
-            "description": "There is a vulnerable Webmin service hosted on `https://challenge03.target:10000/`. Flag: AC2021{r3mot3_C0mm4Nd_eX3cu7i0N_v1a_weB_aPP}",
+            "description": "There is a vulnerable Webmin service hosted on `https://challenge03.target:10000/`. Flag: eXpl0it{r3mot3_C0mm4Nd_eX3cu7i0N_v1a_weB_aPP}",
             "summary": "Get a `flag.txt` file stored in the `root` user's directory.",
             "steps": [
                 "Find WebMin service hosted on default port.",
@@ -304,15 +304,15 @@
                 "Find the flag in the response.",
                 "<div class=\"panel-body\">",
                 "<hr>",
-                "<center><h3>Failed to change password : The current password is incorrectAC2021{r3mot3_C0mm4Nd_eX3cu7i0N_v1a_weB_aPP}",
+                "<center><h3>Failed to change password : The current password is incorrecteXpl0it{r3mot3_C0mm4Nd_eX3cu7i0N_v1a_weB_aPP}",
                 "</h3></center>",
                 "<hr>",
                 "</div>"
             ],
             "portainer_server": "ASYLUM03",
-            "portainer_stack_id": "1",
-            "portainer_ip": "172.25.240.81",
-            "portainer_link": ":6080/vnc.html"
+            "portainer_stack_id": "14",
+            "portainer_ip": "172.25.87.220",
+            "portainer_link": ":6183/vnc.html"
         }
     }
 ]

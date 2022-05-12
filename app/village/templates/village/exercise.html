@@ -19,6 +19,10 @@
                             {% csrf_token %}
                             <button class="main-button-slider mb-2" type="submit">Launch Exercise</button>
                         </form>
+                        <form method="post" action="{% url 'exercise-stop-view' exercise.pk %}">
+                            {% csrf_token %}
+                            <button class="main-button-slider mb-2" type="submit">Stop Exercise</button>
+                        </form>
                         <button onclick="document.getElementById('features').scrollIntoView({
                             behavior: 'smooth'
                         });" class="main-button-slider mb-2">Check Solution</button>

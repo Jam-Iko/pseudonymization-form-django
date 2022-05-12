@@ -6,6 +6,7 @@ from django.utils.safestring import mark_safe
 from .models import Village, Exercise
 import os
 import requests
+import json
 
 
 def index(request):
@@ -22,7 +23,9 @@ class ExerciseView(DetailView):
     template_name = 'village/exercise.html'
 
 
-def connect_portainer(portainer_server, ip):
+def connect_portainer(ip):
+    pk = os.getenv(f'VILLAGE')
+    village = Village.objects.get(pk=pk)
     username = os.getenv(f'PORTAINER_USERNAME')
     password = os.getenv(f'PORTAINER_PASSWORD')
     req = requests.post(f'https://{ip}:9443/api/auth', 
@@ -30,31 +33,99 @@ def connect_portainer(portainer_server, ip):
                     verify=False)
     if req.status_code == 200:
         jwt = req.json()
+        print(jwt)
+        village.portainer_jwt = jwt['jwt']
+        village.save()
         return jwt['jwt']
     else:
         return None
+
+
+def stop_exercise(request, pk):
+    context = {}
+    exercise = Exercise.objects.filter(pk=pk).values()[0]
+    context['exercise'] = exercise
+    pk_village = os.getenv(f'VILLAGE')
+    village = Village.objects.filter(pk=pk_village).values()[0]
+    if request.method == 'POST':
+        stack_id =  exercise["portainer_stack_id"]
+        ip =  exercise["portainer_ip"]
+        jwt = village['portainer_jwt']
+        if not jwt:
+            try:
+                jwt = connect_portainer(ip)
+            except Exception as e:
+                print(e)
+                messages.error(request, "Failed to connect")
+                return redirect('exercise-view', pk)
+        req = requests.post(f'https://{ip}:9443/api/stacks/{stack_id}/stop', 
+                        headers={"Authorization": f"Bearer {jwt}"},
+                        verify=False)
+        print(req.status_code)
+        if req.status_code == 200 or req.status_code == 400:
+            messages.success(request, mark_safe(f"Exercise is stopped"))
+            return redirect('exercise-view', pk)
+    return redirect('exercise-view', pk)
 
 
 def launch_exercise(request, pk):
     context = {}
     exercise = Exercise.objects.filter(pk=pk).values()[0]
     context['exercise'] = exercise
+    pk_village = os.getenv(f'VILLAGE')
+    village = Village.objects.filter(pk=pk_village).values()[0]
     if request.method == 'POST':
-        portainer_server = exercise["portainer_server"]
         stack_id =  exercise["portainer_stack_id"]
         ip =  exercise["portainer_ip"]
         link = exercise["portainer_link"]
         title = exercise["title"]
-        jwt = connect_portainer(portainer_server, ip)
+        jwt = json.dumps(village['portainer_jwt'])
+        print(jwt)
         if not jwt:
-            messages.error(request, "Failed to connect")
-            return redirect('exercise-view', pk)
+            print("Need to get jwt")
+            jwt = connect_portainer(ip)
+            if not jwt:
+                messages.error(request, "Failed to connect")
+                return redirect('exercise-view', pk)
         req = requests.post(f'https://{ip}:9443/api/stacks/{stack_id}/start', 
                         headers={"Authorization": f"Bearer {jwt}"},
                         verify=False)
-        print(req)
-        # 409 stack already started
+        if req.status_code == 401:
+            jwt = connect_portainer(ip)
+            if not jwt:
+                messages.error(request, "Failed to connect")
+                return redirect('exercise-view', pk)
+            req = requests.post(f'https://{ip}:9443/api/stacks/{stack_id}/start', 
+                    headers={"Authorization": f"Bearer {jwt}"},
+                    verify=False)
+            if req.status_code == 200 or req.status_code == 409:
+                messages.success(request, mark_safe(f"Please follow link to view <a href='http://{ip}{link}' target='_blank' rel='noopener noreferrer'>{title}</a>"))
+                return redirect('exercise-view', pk)
         if req.status_code == 200 or req.status_code == 409:
             messages.success(request, mark_safe(f"Please follow link to view <a href='http://{ip}{link}' target='_blank' rel='noopener noreferrer'>{title}</a>"))
+            return redirect('exercise-view', pk)
+    return redirect('exercise-view', pk)
+
+
+def launch_docker(request, pk):
+    context = {}
+    exercise = Exercise.objects.filter(pk=pk).values()[0]
+    context['exercise'] = exercise
+    
+    _FLASK_API = os.getenv(f'FLASK_API')
+    _FLASK_API_KEY = os.getenv(f'FLASK_API_KEY')
+    if request.method == 'POST':
+        title = exercise["title"]
+        req = requests.post(f'{_FLASK_API}:5000/launch_exercise', 
+                        json={"exercise": pk},
+                        headers={"X-Api-Key": _FLASK_API_KEY},
+                    )
+        print(req.status_code, json.loads(req.content))
+        if not req.status_code == 200:
+            messages.error(request, "Failed to connect")
+            return redirect('exercise-view', pk)
+        res = json.loads(req.content)
+        port = res['message']
+        messages.success(request, mark_safe(f"Please follow link to view <a href='{_FLASK_API}:{port}/vnc.html' target='_blank' rel='noopener noreferrer'>{title}</a>"))
         return redirect('exercise-view', pk)
     return redirect('exercise-view', pk)

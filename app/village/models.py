@@ -19,6 +19,10 @@ class Village(models.Model):
     icon = models.CharField(
         max_length=512
     )
+    portainer_jwt = models.CharField(
+        max_length=4096,
+        default=None, blank=True, null=True
+    )
 
 
 class Exercise(models.Model):

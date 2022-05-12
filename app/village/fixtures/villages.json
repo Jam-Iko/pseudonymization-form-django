@@ -7,7 +7,8 @@
             "description": "In Password Cracking Village we have assembled exercises on different password cracking methods and tools: PDF password cracking, MD5 vulnerability, SSH passphrase cracking, brute forcing Basic Auth and HTTP password. You will run sets of commands until you can successfully crack a password.And a gentle reminder, Password123 is a very (very) bad password.",
             "summary": "Are you up to the challenge to crack a password or will you pass? Prepare to immerse in a password cracking laboratory.", 
             "image": "https://hm-conf-web-dev.s3.us-west-2.amazonaws.com/files/hm-confmgr/arcticcon/628b3cf1-3055-4df1-9038-d8e5c2b98116/cracking_village.jpg",
-            "icon": "featured-item-01.png"            
+            "icon": "featured-item-01.png",
+            "portainer_jwt": ""            
         }
     },
     {
@@ -18,7 +19,8 @@
             "description": "What happens in dark web stays in dark web? Spoiler alert, it doesn't. Dark web is a breeding ground for criminal activities: illicit drugs, credit card markets, forged documents... We invite you to take a look at the dark side, browse our catalogue of deep web sites safely without having to wait a ton to load the page.",
             "summary": "Browse the dark web yourself using our systems that are set up to access the underground sites", 
             "image": "https://hm-conf-web-dev.s3.us-west-2.amazonaws.com/files/hm-confmgr/arcticcon/66708d3f-2ec8-43bd-a946-d76395830789/dark_web.jpg",
-            "icon": "featured-item-01.png"
+            "icon": "featured-item-01.png",
+            "portainer_jwt": ""  
         }
     },
     {
@@ -29,7 +31,8 @@
             "description": "The Asylum Village challenges you to become a black hat hacker on a succession of tasks. Your mission, should you chose to accept it, is listed on a screen before you, the rest is up to you.",
             "summary": "Learn the attacks that advanced security professionals use to breach corporate systems.", 
             "image": "https://hm-conf-web-dev.s3.us-west-2.amazonaws.com/files/hm-confmgr/arcticcon/3ffaf101-3c49-4412-914f-658d732a4fee/asylum.jpg",
-            "icon": "featured-item-01.png"
+            "icon": "featured-item-01.png",
+            "portainer_jwt": ""  
         }
     }
 ]
