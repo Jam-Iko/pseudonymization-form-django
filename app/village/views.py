@@ -3,11 +3,14 @@ from django.shortcuts import render, get_object_or_404, HttpResponseRedirect, re
 from django.views.generic import ListView, DetailView
 from django.contrib import messages
 from django.utils.safestring import mark_safe
+from cryptography.fernet import Fernet
 from .models import Village, Exercise
 import os
 import requests
 import json
 
+_KEY = bytes(os.getenv('KEY', None), "utf-8")
+f = Fernet(_KEY)
 
 def index(request):
     context = {}
@@ -23,6 +26,29 @@ class ExerciseView(DetailView):
     template_name = 'village/exercise.html'
 
 
+def launch_exercise(request, pk):
+    context = {}
+    exercise = Exercise.objects.filter(pk=pk).values()[0]
+    context['exercise'] = exercise
+    
+    _FLASK_API = os.getenv('FLASK_API')
+    _FLASK_API_KEY = os.getenv('FLASK_API_KEY')
+    x_api_key = f.encrypt(bytes(pk, "utf-8"))
+    if request.method == 'POST':
+        req = requests.post(f'{_FLASK_API}:5000/launch_exercise', 
+                        json={"exercise": pk},
+                        headers={"X-Api-Key": x_api_key},
+                    )
+        if not req.status_code == 200:
+            messages.error(request, "Failed to connect")
+            return redirect('exercise-view', pk)
+        res = json.loads(req.content)
+        messages.success(request, mark_safe(f"Setup is complete. Please follow steps to complete exercise</a>"))
+        return redirect('exercise-view', pk)
+    return redirect('exercise-view', pk)
+
+
+# PORTAINER SETUP
 def connect_portainer(ip):
     pk = os.getenv(f'VILLAGE')
     village = Village.objects.get(pk=pk)
@@ -41,7 +67,7 @@ def connect_portainer(ip):
         return None
 
 
-def stop_exercise(request, pk):
+def stop_portainer_exercise(request, pk):
     context = {}
     exercise = Exercise.objects.filter(pk=pk).values()[0]
     context['exercise'] = exercise
@@ -68,7 +94,7 @@ def stop_exercise(request, pk):
     return redirect('exercise-view', pk)
 
 
-def launch_exercise(request, pk):
+def launch_portainer_exercise(request, pk):
     context = {}
     exercise = Exercise.objects.filter(pk=pk).values()[0]
     context['exercise'] = exercise
@@ -104,28 +130,4 @@ def launch_exercise(request, pk):
         if req.status_code == 200 or req.status_code == 409:
             messages.success(request, mark_safe(f"Please follow link to view <a href='http://{ip}{link}' target='_blank' rel='noopener noreferrer'>{title}</a>"))
             return redirect('exercise-view', pk)
-    return redirect('exercise-view', pk)
-
-
-def launch_docker(request, pk):
-    context = {}
-    exercise = Exercise.objects.filter(pk=pk).values()[0]
-    context['exercise'] = exercise
-    
-    _FLASK_API = os.getenv(f'FLASK_API')
-    _FLASK_API_KEY = os.getenv(f'FLASK_API_KEY')
-    if request.method == 'POST':
-        title = exercise["title"]
-        req = requests.post(f'{_FLASK_API}:5000/launch_exercise', 
-                        json={"exercise": pk},
-                        headers={"X-Api-Key": _FLASK_API_KEY},
-                    )
-        print(req.status_code, json.loads(req.content))
-        if not req.status_code == 200:
-            messages.error(request, "Failed to connect")
-            return redirect('exercise-view', pk)
-        res = json.loads(req.content)
-        port = res['message']
-        messages.success(request, mark_safe(f"Please follow link to view <a href='{_FLASK_API}:{port}/vnc.html' target='_blank' rel='noopener noreferrer'>{title}</a>"))
-        return redirect('exercise-view', pk)
     return redirect('exercise-view', pk)
