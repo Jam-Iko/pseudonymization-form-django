@@ -17,9 +17,9 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data/
     environment:
-      - POSTGRES_USER=village_django
-      - POSTGRES_PASSWORD=village_django
-      - POSTGRES_DB=village_django_dev
+      - POSTGRES_USER=malware_report_django
+      - POSTGRES_PASSWORD=malware_report_django
+      - POSTGRES_DB=malware_report_django_dev
 
 volumes:
   postgres_data:

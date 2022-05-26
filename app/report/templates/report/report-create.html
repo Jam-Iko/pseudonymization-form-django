@@ -1,0 +1,89 @@
+{% extends 'report/base.html' %}
+{% load static %}
+
+{% block title %} {{ form.title }} {% endblock %}
+
+{% block content %}
+
+<div class="container">
+    <div class="card mt-5">
+        <div class="card-body">
+            <h1 class="display-4 text-center">{{ report.title }}</h1>
+            <form method="post">
+                {% csrf_token %}
+                {% load crispy_forms_tags %}
+                {% crispy report %}
+                <h1 class="lead text-center"> Files </h1>
+                <div id="files-form-container">
+                    {{ files.management_form|crispy }}
+                    {% for form in files %}
+                    <div class="files-form">
+                        {% crispy form %}
+                    </div>
+                    {% endfor %}
+                    <button id="add-file-form" type="button" class="btn btn-success mb-2">Add more</button>
+                </div>
+                <h1 class="lead text-center"> Connections </h1>
+                <div id="conns-form-container">
+                    {{ connections.management_form|crispy }}
+                    {% for form in connections %}
+                    <div class="conns-form">
+                        {% crispy form %}
+                    </div>
+                    {% endfor %}
+                    <button id="add-conn-form" type="button" class="btn btn-success mb-2">Add more</button>
+                </div>
+                <input type="submit" class="btn btn-primary my-2 my-sm-0">
+                <a class="btn btn-primary my-2 my-sm-0" href="{% url 'create-report-view' %}">Clear</a>
+            </form>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block script %}
+<script>
+    let fileForm = document.querySelectorAll(".files-form")
+    let container = document.querySelector("#files-form-container")
+    let addFileButton = document.querySelector("#add-file-form")
+    let totalFileForms = document.querySelector("#id_reportfilesmodel_set-TOTAL_FORMS")
+
+    let formFileNum = fileForm.length-1
+    addFileButton.addEventListener('click', addFileForm)
+
+    function addFileForm(e){
+        e.preventDefault()
+
+        let newFileForm = fileForm[0].cloneNode(true)
+        let formRegex = RegExp(`reportfilesmodel_set-(\\d){1}-`,'g')
+        
+        formFileNum++
+        newFileForm.innerHTML = newFileForm.innerHTML.replace(formRegex, `reportfilesmodel_set-${formFileNum}-`)
+        container.insertBefore(newFileForm, addFileButton)
+        
+        totalFileForms.setAttribute('value', `${formFileNum+1}`)
+    }
+
+    let connForm = document.querySelectorAll(".conns-form")
+    let containerConn = document.querySelector("#conns-form-container")
+    let addConnButton = document.querySelector("#add-conn-form")
+    let totalConnsForms = document.querySelector("#id_reportconnectionsmodel_set-TOTAL_FORMS")
+
+    let formConnNum = connForm.length-1
+    addConnButton.addEventListener('click', addConnForm)
+
+    function addConnForm(e){
+        e.preventDefault()
+
+        let newConnForm = connForm[0].cloneNode(true)
+        let formRegex = RegExp(`reportconnectionsmodel_set-(\\d){1}-`,'g')
+
+        formConnNum++
+        newConnForm.innerHTML = newConnForm.innerHTML.replace(formRegex, `reportconnectionsmodel_set-${formConnNum}-`)
+        containerConn.insertBefore(newConnForm, addConnButton)
+        
+        totalConnsForms.setAttribute('value', `${formConnNum+1}`)
+    }
+</script>
+{% endblock %}
