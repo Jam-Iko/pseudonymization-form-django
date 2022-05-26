@@ -1,44 +1,44 @@
 {% extends 'report/base.html' %}
 {% load static %}
 
-{% block title %} {{ form.title }} {% endblock %}
+{% block title %} {{ report.title }} {% endblock %}
 
 {% block content %}
 
-<div class="container">
-    <div class="card mt-5">
-        <div class="card-body">
-            <h1 class="display-4 text-center">{{ report.title }}</h1>
-            <form method="post">
-                {% csrf_token %}
-                {% load crispy_forms_tags %}
-                {% crispy report %}
-                <h1 class="lead text-center"> Files </h1>
-                <div id="files-form-container">
-                    {{ files.management_form|crispy }}
-                    {% for form in files %}
-                    <div class="files-form">
-                        {% crispy form %}
-                    </div>
-                    {% endfor %}
-                    <button id="add-file-form" type="button" class="btn btn-success mb-2">Add more</button>
+
+<div class="card mt-5">
+    <div class="card-body">
+        <h1 class="text-center">{{ report.title }}</h1>
+        <form method="post">
+            {% csrf_token %}
+            {% load crispy_forms_tags %}
+            {% crispy report %}
+            <h1 class="lead text-center"> Files </h1>
+            <div id="files-form-container">
+                {{ files.management_form|crispy }}
+                {% for form in files %}
+                <div class="files-form">
+                    {% crispy form %}
                 </div>
-                <h1 class="lead text-center"> Connections </h1>
-                <div id="conns-form-container">
-                    {{ connections.management_form|crispy }}
-                    {% for form in connections %}
-                    <div class="conns-form">
-                        {% crispy form %}
-                    </div>
-                    {% endfor %}
-                    <button id="add-conn-form" type="button" class="btn btn-success mb-2">Add more</button>
+                {% endfor %}
+                <button id="add-file-form" type="button" class="btn btn-outline-success mb-2">Add more</button>
+            </div>
+            <h1 class="lead text-center"> Connections </h1>
+            <div id="conns-form-container">
+                {{ connections.management_form|crispy }}
+                {% for form in connections %}
+                <div class="conns-form">
+                    {% crispy form %}
                 </div>
-                <input type="submit" class="btn btn-primary my-2 my-sm-0">
-                <a class="btn btn-primary my-2 my-sm-0" href="{% url 'create-report-view' %}">Clear</a>
-            </form>
-        </div>
+                {% endfor %}
+                <button id="add-conn-form" type="button" class="btn btn-outline-success mb-2">Add more</button>
+            </div>
+            <input type="submit" value="Generate Report" class="btn btn-primary my-2 my-sm-0">
+            <a class="btn btn-outline-primary my-2 my-sm-0" href="{% url 'create-report-view' %}">Clear</a>
+        </form>
     </div>
 </div>
+
 
 {% endblock %}
 

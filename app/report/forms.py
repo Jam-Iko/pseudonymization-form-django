@@ -9,7 +9,7 @@ from django.utils import timezone
 
 class ReportCreateForm(forms.ModelForm):
     url = "create-report-view"
-    title = "Report Sheet"
+    title = "Malware Analysis Report Sheet"
 
     class Meta:
         model = ReportModel
@@ -25,19 +25,19 @@ class ReportCreateForm(forms.ModelForm):
         widgets = {
             'malware_name': forms.TextInput(attrs={
                 'class': 'form-control',
-                'placeholder': 'Enter Reason for Service Report'
+                'placeholder': 'Malware name'
             }),
             'category': forms.TextInput(attrs={
                 'class': 'form-control',
-                'placeholder': 'Enter Reason for Service Report'
+                'placeholder': 'Malware Category'
             }),
             'group': forms.TextInput(attrs={
                 'class': 'form-control',
-                'placeholder': 'Enter Reason for Service Report'
+                'placeholder': 'Malware Group'
             }),
             'investigator_name': forms.TextInput(attrs={
                 'class': 'form-control',
-                'placeholder': 'Enter Reason for Service Report'
+                'placeholder': 'Author Name'
             }),
             'started': forms.DateInput(attrs={
                 'type': 'date'
@@ -48,8 +48,7 @@ class ReportCreateForm(forms.ModelForm):
             'summary': forms.Textarea(attrs={
                 'rows':4, 
                 'class': 'form-control',
-                'placeholder': 'To the best of your abilities, list all actions taken during service.  Please include'
-                'dates, times, and equipment names'}),
+                'placeholder': 'Key observations, recommendations and possible limitations'}),
         }
 
     def __init__(self, *args, **kwargs):
@@ -86,15 +85,15 @@ class ReportFilesForm(forms.ModelForm):
         widgets = {
             'file': forms.TextInput(attrs={
                 'class': 'form-control',
-                'placeholder': 'Enter Reason for Service Report'
+                'placeholder': 'File name, type, size'
             }),
             'hash': forms.TextInput(attrs={
                 'class': 'form-control',
-                'placeholder': 'Enter Reason for Service Report'
+                'placeholder': 'File hashes'
             }),
             'notes': forms.TextInput(attrs={
                 'class': 'form-control',
-                'placeholder': 'Enter Reason for Service Report'
+                'placeholder': 'Additional Notes'
             })
         }
 
@@ -125,17 +124,22 @@ class ReportConnectionsForm(forms.ModelForm):
         ]
         widgets = {
             'url': forms.URLInput(attrs={
+                'lable': 'Link',
                 'class': 'form-control',
-                'placeholder': 'Enter Reason for Service Report'
+                'placeholder': 'Please include URL'
             }),
             'ip': forms.TextInput(attrs={
                 'class': 'form-control',
-                'placeholder': 'Enter Reason for Service Report'
+                'placeholder': 'IP address associated with connection'
             }),
             'notes': forms.TextInput(attrs={
                 'class': 'form-control',
-                'placeholder': 'Enter Reason for Service Report'
+                'placeholder': 'Additional Notes'
             })
+        }
+        labels = {
+            'url': 'Link',
+            'ip': 'IP'
         }
 
     def __init__(self, *args, **kwargs):

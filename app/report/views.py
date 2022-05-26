@@ -14,6 +14,7 @@ import base64
 import os
 import requests
 import json
+import pendulum
 
 _EVENT_ID = os.getenv("EVENT_ID", None)
 _AWS_ACCESS_KEY = os.getenv("AWS_ACCESS_KEY", None)
@@ -37,13 +38,13 @@ def reportcreateview(request):
                 filesform.save()
                 connectionsform.save()
             data = pre_process(report, filesform.cleaned_data, connectionsform.cleaned_data)
-            api_result = send_api(json.dumps(data))
-            if api_result.status == 200:
-                pdf = run_template(data)
-                return FileResponse(pdf, as_attachment=True, filename='report.pdf')
-            else:
-                print("API FAILED")
-            return redirect('index-view')
+            print(pendulum.now())
+            api_result = send_api(data)
+            print(pendulum.now())
+            pdf = run_template(data)
+            print(pendulum.now())
+            return FileResponse(pdf, as_attachment=True, filename='report.pdf')
+        return redirect('index-view')
     else:
         filesform = FilesFormSet()
         connectionsform = ConnectionsFormSet()
@@ -63,7 +64,7 @@ def send_api(data):
                         aws_region='us-west-2',
                         aws_service='execute-api')
     headers = {'Content-Type': 'application/json'}
-    response = requests.post(f'{_REST_API}/dev/api/{_EVENT_ID}/generate_report/',
+    response = requests.post(f'{_REST_API}/exploit/api/{_EVENT_ID}/generate_report/',
                             auth=auth, headers=headers, json=data)
     return response
 
@@ -71,12 +72,29 @@ def send_api(data):
 def pre_process(report_obj, files, connections):
     url = f"{_BASE_URL}/image/mdv/{_EVENT_ID}/{report_obj.id}/report.pdf"
     qr_png = generate_qr(url)
-    report = model_to_dict(report_obj, fields=[field.name for field in report_obj._meta.fields])
-    report['files'] = files
-    report['connections'] = connections
-    report['qr_png'] = qr_png
-    report['report_id'] = report_obj.id
-    return report
+    data = {}
+    started_str = str(report_obj.started).split(" ")[0]
+    ended_str = str(report_obj.ended).split(" ")[0]
+    data['malware_name'] = report_obj.malware_name
+    data['category'] = report_obj.category
+    data['group'] = report_obj.group
+    data['investigator_name'] = report_obj.investigator_name
+    data['summary'] = report_obj.summary
+    data['started'] = started_str
+    data['ended'] = ended_str
+    for file in files:
+        del file['report']
+        del file['id']
+        del file['DELETE']
+    for conn in connections:
+        del conn['report']
+        del conn['id']
+        del conn['DELETE']
+    data['files'] = files
+    data['connections'] = connections
+    data['qr_png'] = qr_png
+    data['report_id'] = str(report_obj.id)
+    return data
 
 
 def run_template(report):
