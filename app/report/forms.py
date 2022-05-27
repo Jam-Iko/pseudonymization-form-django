@@ -91,7 +91,8 @@ class ReportFilesForm(forms.ModelForm):
                 'class': 'form-control',
                 'placeholder': 'File hashes'
             }),
-            'notes': forms.TextInput(attrs={
+            'notes': forms.Textarea(attrs={
+                'rows':4, 
                 'class': 'form-control',
                 'placeholder': 'Additional Notes'
             })
@@ -126,13 +127,14 @@ class ReportConnectionsForm(forms.ModelForm):
             'url': forms.URLInput(attrs={
                 'lable': 'Link',
                 'class': 'form-control',
-                'placeholder': 'Please include URL'
+                'placeholder': 'Enter valid URL'
             }),
             'ip': forms.TextInput(attrs={
                 'class': 'form-control',
-                'placeholder': 'IP address associated with connection'
+                'placeholder': 'Enter valid IP'
             }),
-            'notes': forms.TextInput(attrs={
+            'notes': forms.Textarea(attrs={
+                'rows':4, 
                 'class': 'form-control',
                 'placeholder': 'Additional Notes'
             })

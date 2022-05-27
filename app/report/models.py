@@ -8,16 +8,16 @@ class ReportModel(models.Model):
         editable=False
     )
     malware_name = models.CharField(
-        max_length=24
+        max_length=256
     )
     category = models.CharField(
-        max_length=24
+        max_length=256
     )
     group = models.CharField(
-        max_length=24
+        max_length=256
     )
     investigator_name = models.CharField(
-        max_length=24
+        max_length=128
     )
     started = models.DateTimeField(
         blank=True, 
@@ -28,6 +28,7 @@ class ReportModel(models.Model):
         null=True
     )
     summary = models.TextField(
+        max_length=2048,
         null=False, 
         blank=False
     )
@@ -44,16 +45,17 @@ class ReportFilesModel(models.Model):
         on_delete=models.CASCADE
     )
     file = models.CharField(
-        max_length=24,
+        max_length=256,
         null=True, 
         blank=True
     )
     hash = models.CharField(
-        max_length=24,
+        max_length=256,
         null=True, 
         blank=True
     )
     notes = models.TextField(
+        max_length=2048,
         null=True, 
         blank=True
     )
@@ -69,16 +71,19 @@ class ReportConnectionsModel(models.Model):
         ReportModel, 
         on_delete=models.CASCADE
     )
-    ip = models.CharField(
-        max_length=24,
+    ip = models.GenericIPAddressField(
+        protocol='both', 
+        unpack_ipv4=False,
         blank=True,
-        null=True
+        null=True,
     )
     url = models.URLField(
+        max_length=2048,
         blank=True,
         null=True
     )
     notes = models.TextField(
+        max_length=2048,
         blank=True,
         null=True
     )

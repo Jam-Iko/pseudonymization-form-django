@@ -1,8 +1,9 @@
 from django.shortcuts import render, redirect
 from django.http import FileResponse
 from django.forms.models import model_to_dict
-from .forms import ReportCreateForm, FilesFormSet, ConnectionsFormSet
-
+from .forms import ReportCreateForm, FilesFormSet, ConnectionsFormSet, ReportConnectionsForm, ReportFilesForm
+from .models import ReportConnectionsModel, ReportFilesModel
+from django.contrib import messages
 from aws_requests_auth.aws_auth import AWSRequestsAuth
 
 from jinja2 import Template
@@ -37,14 +38,21 @@ def reportcreateview(request):
                 report.save()
                 filesform.save()
                 connectionsform.save()
-            data = pre_process(report, filesform.cleaned_data, connectionsform.cleaned_data)
-            print(pendulum.now())
-            api_result = send_api(data)
-            print(pendulum.now())
-            pdf = run_template(data)
-            print(pendulum.now())
-            return FileResponse(pdf, as_attachment=True, filename='report.pdf')
-        return redirect('index-view')
+                data = pre_process(report)
+                print(pendulum.now())
+                api_result = send_api(data)
+                print(pendulum.now())
+                pdf = run_template(data)
+                print(pendulum.now())
+                return FileResponse(pdf, as_attachment=True, filename='report.pdf')
+            if not filesform.is_valid():
+                messages.error(request, "Invalid input in Files section")
+            if not connectionsform.is_valid():
+                messages.error(request, "Invalid input in Connections section")
+            return redirect('create-report-view')
+        else:
+            messages.error(request, "Report failed validation checks")
+        return redirect('create-report-view')
     else:
         filesform = FilesFormSet()
         connectionsform = ConnectionsFormSet()
@@ -57,6 +65,33 @@ def reportcreateview(request):
     return render(request, 'report/report-create.html', context)
 
 
+def get_model_data(report):
+    report_export = model_to_dict(report, fields= ReportCreateForm._meta.fields)
+    file_queryset = ReportFilesModel.objects.filter(report=report.id)
+    conn_queryset = ReportConnectionsModel.objects.filter(report=report.id)
+    files, connections = [], []
+    for conn in conn_queryset:
+        connections.append(model_to_dict(conn, fields= ReportConnectionsForm._meta.fields))
+    for file in file_queryset:
+        files.append(model_to_dict(file, fields= ReportFilesForm._meta.fields))
+    return report_export, files, connections
+
+
+def pre_process(report_obj):
+    report, files, connections = get_model_data(report_obj)
+    url = f"{_BASE_URL}/image/mdv/{_EVENT_ID}/{report_obj.id}/report.pdf"
+    qr_png = generate_qr(url)
+    started_str = str(report['started']).split(" ")[0]
+    ended_str = str(report['ended']).split(" ")[0]
+    report['started'] = started_str
+    report['ended'] = ended_str
+    report['files'] = files
+    report['connections'] = connections
+    report['qr_png'] = qr_png
+    report['report_id'] = str(report_obj.id)
+    return report
+
+
 def send_api(data):
     auth = AWSRequestsAuth(aws_access_key=_AWS_ACCESS_KEY,
                         aws_secret_access_key=_AWS_SECRET,
@@ -67,34 +102,6 @@ def send_api(data):
     response = requests.post(f'{_REST_API}/exploit/api/{_EVENT_ID}/generate_report/',
                             auth=auth, headers=headers, json=data)
     return response
-
-
-def pre_process(report_obj, files, connections):
-    url = f"{_BASE_URL}/image/mdv/{_EVENT_ID}/{report_obj.id}/report.pdf"
-    qr_png = generate_qr(url)
-    data = {}
-    started_str = str(report_obj.started).split(" ")[0]
-    ended_str = str(report_obj.ended).split(" ")[0]
-    data['malware_name'] = report_obj.malware_name
-    data['category'] = report_obj.category
-    data['group'] = report_obj.group
-    data['investigator_name'] = report_obj.investigator_name
-    data['summary'] = report_obj.summary
-    data['started'] = started_str
-    data['ended'] = ended_str
-    for file in files:
-        del file['report']
-        del file['id']
-        del file['DELETE']
-    for conn in connections:
-        del conn['report']
-        del conn['id']
-        del conn['DELETE']
-    data['files'] = files
-    data['connections'] = connections
-    data['qr_png'] = qr_png
-    data['report_id'] = str(report_obj.id)
-    return data
 
 
 def run_template(report):
