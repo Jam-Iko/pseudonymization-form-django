@@ -14,7 +14,7 @@ ENV PYTHONUNBUFFERED 1
 
 # install psycopg2 dependencies
 RUN apk update \
-    && apk add postgresql-dev gcc musl-dev python3-dev libffi-dev openssl-dev cargo
+    && apk add gcc musl-dev python3-dev libffi-dev openssl-dev cargo
 ENV CFLAGS="-fcommon"
 
 RUN pip install --upgrade pip

@@ -1,0 +1,85 @@
+{% extends 'report/base.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+
+
+{% block title %} {{ form.title }} {% endblock %}
+
+{% block content %}
+<div class="card mt-5">
+    <div class="card-body">
+      <h1 class="card-title">
+        Обираємо псевдонімізацію для вашої організації
+      </h1>
+      <h3 class="lead">Будь ласка, оберіть варіанти відповідей, які найкраще описують потреби Вашої організації</h3>
+        <div class="row">
+            {% for message in messages %}
+            <div class="container-fluid p-0">
+              <div class="alert {{ message.tags }} alert-dismissible" role="alert" >
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                  <span aria-hidden="True">&times;</span>
+                </button>
+                {{ message }}
+              </div>
+            </div>
+            {% endfor %}
+        </div>
+        <h1 class="text-center">{{ form.title }}</h1>
+        <form method="post" id="pseudoForm">
+            {% csrf_token %}
+            {{ form|crispy }}
+        </form>
+    </div>
+</div>
+
+
+{% endblock %}
+
+{% block script %}
+<script type="text/javascript">
+
+  document.getElementById('div_id_company_size').style.display = "none";
+  document.getElementById('div_id_store_sensitive').style.display = "none";
+  document.getElementById('div_id_ip_addr').style.display = "none";
+  document.getElementById('div_id_category').style.display = "none";
+  document.getElementById('div_id_email').style.display = "none";
+  document.getElementById('div_id_use_pseudo').style.display = "none";  
+
+  function scenarioFunction() {
+    if (event.target.id === 'id_scenario_0' || event.target.id === 'id_scenario_1' || event.target.id === 'id_scenario_2') {
+      document.getElementById("pseudoForm").submit();
+    }
+    if (event.target.id === 'id_scenario_3' || event.target.id === 'id_scenario_4' || event.target.id === 'id_scenario_5') {
+      document.getElementById('div_id_store_sensitive').style.display = "block";
+    }
+  };
+  function storeSensitiveFunction() {
+    if (event.target.value === 'yes') {
+      document.getElementById("pseudoForm").submit();
+    }
+    if (event.target.value === 'no') {
+      document.getElementById('div_id_company_size').style.display = "block";
+    }
+  };
+  function companySizeFunction() {
+    if (event.target.value === 'large') {
+      document.getElementById('div_id_ip_addr').style.display = "block";
+    }
+    if (event.target.value === 'small' || event.target.value === 'medium') {
+      document.getElementById('div_id_category').style.display = "block";
+    }
+  };
+  function categoryFunction() {
+      document.getElementById('div_id_ip_addr').style.display = "block";
+  };
+  function ipAddressFunction() {
+      document.getElementById('div_id_email').style.display = "block";
+  };
+  function emailFunction() {
+      document.getElementById('div_id_use_pseudo').style.display = "block";
+  };
+  function usePseudoFunction() {
+    document.getElementById("pseudoForm").submit();
+  };
+</script>
+{% endblock %}

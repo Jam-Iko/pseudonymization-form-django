@@ -2,5 +2,5 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
-    path('', views.reportcreateview, name='create-report-view')
+    path('', views.select_pseudo, name='select-pseudo-view')
 ]

@@ -9,17 +9,11 @@
     <!-- Bootstrap CSS -->
     <link href="{% static 'report/css/bootstrap.min.css' %}" rel="stylesheet">
     <link href="{% static 'report/css/style.css' %}" rel="stylesheet">
-    <link rel="shortcut icon" href="https://exploitcon.com/favicon.ico">
     {% block stylesheet %}{% endblock %}
 
-    <title>{% block title %}Exploit Conferences{% endblock %}</title>
+    <title>{% block title %}Selecting Pseudonymization Function{% endblock %}</title>
   </head>
   <body>
-    <nav class="navbar navbar-expand-sm navbar-light bg-light sticky-top">
-        <a href="{% url 'create-report-view' %}" class="logo">
-            <img src="{% static 'report/img/logo.png' %}" alt="Exploit Conferences"/>
-        </a>
-    </nav>
     {% block body %}
     <div class='container'>
       {% block content %}
@@ -27,7 +21,6 @@
     </div>
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
     <script src="{% static 'report/js/bootstrap.bundle.js' %}"></script>
-    <script src="{% static 'report/js/instascan.min.js' %}"></script>
     {% block script %}
     {% endblock %}
     {% endblock %}
